@@ -4,10 +4,10 @@ export const createAppointment = async (req, res) => {
 
   try {
 
-    const { doctor, date, time, paymentMethod } = req.body;
+    const { doctorId, date, time, paymentMethod } = req.body;
 
     const appointment = await Appointment.create({
-      doctor: doctor,
+      doctor: doctorId,
       patient: req.user._id,
       date,
       time,
@@ -102,5 +102,24 @@ export const getMyAppointments = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
+  }
+};
+//payment approved 
+export const updatePaymentStatus = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    appointment.paymentStatus = "paid";
+
+    await appointment.save();
+
+    res.json({ message: "Payment marked as paid" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Payment update failed" });
   }
 };

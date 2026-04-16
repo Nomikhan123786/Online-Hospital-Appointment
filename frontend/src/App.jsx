@@ -14,14 +14,14 @@ import ResetPassword from "./pages/auth/ResetPassword";
 // Patient Pages
 import DoctorsList from "./pages/patient/doctorsList";
 import DoctorDetails from "./pages/patient/DoctorDetails";
-import BookAppointment from "./pages/patient/BookAppointment";
+
 import MyAppointments from "./pages/patient/MyAppointments";
 import PaymentPage from "./pages/patient/PaymentPage";
 
 // Doctor Page
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import ManageSchedule from "./pages/doctor/ManageSchedule";
-import PatientList from "./pages/doctor/PatientList";
+
 // Admin Page
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -63,16 +63,6 @@ function App() {
               </ProtectedRoute>
             }
             />
-          
-         
-          <Route
-            path="/book/:id"
-            element={
-              <ProtectedRoute role="patient">
-                <BookAppointment />
-              </ProtectedRoute>
-            }
-          />
           <Route
             path="/appointments"
             element={
@@ -108,14 +98,7 @@ function App() {
            }
           />
 
-          <Route
-           path="/doctor/patients"
-           element={
-           <ProtectedRoute role="doctor">
-           <PatientList />
-           </ProtectedRoute>
-           }
-          />
+        
 
           {/* Admin Route */}
          

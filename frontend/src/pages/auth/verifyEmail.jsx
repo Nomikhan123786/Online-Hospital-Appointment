@@ -14,7 +14,7 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-container animate-[fadeIn_0.6s_ease-in]">
       <h2>Verify Email</h2>
 
       <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />

@@ -58,7 +58,7 @@ const MedicalHistory = () => {
   
 
   return (
-    <div style={{ padding: "30px" }}>
+    <div style={{ padding: "30px" }} className="animate-[fadeIn_0.6s_ease-in]">
       <h2>Medical History</h2>
 
       <div className="card">

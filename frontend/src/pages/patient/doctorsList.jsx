@@ -14,7 +14,7 @@ const DoctorsList = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
+    <div className="min-h-screen bg-gray-50 py-12 px-6 animate-[fadeIn_0.6s_ease-in]">
       
       {/* Page Header */}
       <div className="max-w-7xl mx-auto mb-10 text-center">

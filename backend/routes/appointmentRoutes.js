@@ -2,12 +2,13 @@ import express from "express";
 import Appointment from "../models/Appointment.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { cancelAppointment } from "../controllers/appointmentController.js";
+import { updatePaymentStatus } from "../controllers/appointmentController.js";
 import {
   createAppointment,
   updateAppointmentStatus,
 } from "../controllers/appointmentController.js";
 const router = express.Router();
-
+router.post("/", authMiddleware, createAppointment);
 // Book appointment
 router.post("/", authMiddleware, async (req, res) => {
   try {
@@ -36,6 +37,7 @@ router.get("/my", authMiddleware, async (req, res) => {
     })
       .populate({
       path: "doctor",
+      select: "specialization user",
       populate: {
         path: "user",
         select: "name email"
@@ -74,7 +76,8 @@ router.put("/:id", authMiddleware, async (req, res) => {
   }
 
 });
-router.post("/", authMiddleware, createAppointment);
+
 router.put("/:id", authMiddleware, updateAppointmentStatus);
+router.put("/payment/:id", authMiddleware, updatePaymentStatus);
 
 export default router;

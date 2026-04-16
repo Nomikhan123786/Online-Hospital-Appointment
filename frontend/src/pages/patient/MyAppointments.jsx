@@ -46,7 +46,7 @@ const MyAppointments = () => {
     try {
 
       await API.delete(`/appointments/${id}`);
-
+       fetchAppointments();
       setAppointments((prev) =>
         prev.filter((app) => app._id !== id)
       );
@@ -99,7 +99,7 @@ const MyAppointments = () => {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 py-10 px-6">
+    <div className="min-h-screen bg-gray-100 py-10 px-6 animate-[fadeIn_0.6s_ease-in]">
 
       <div className="max-w-6xl mx-auto">
 
@@ -137,7 +137,7 @@ const MyAppointments = () => {
 
                 <img
                   src={
-                    app?.doctor?.profileImage ||
+                    app.doctor?.profileImage ||
                     "https://cdn-icons-png.flaticon.com/512/387/387561.png"
                   }
                   alt="doctor"
@@ -147,11 +147,11 @@ const MyAppointments = () => {
                 <div>
 
                   <h3 className="text-lg font-semibold text-gray-800">
-                     {app?.doctor?.user?.name}
+                     {app.doctor?.user?.name || "Doctor"}
                   </h3>
 
                   <p className="text-sm text-gray-500">
-                    {app?.doctor?.specialization}
+                    {app.doctor?.specialization || "Specilization"}
                   </p>
 
                 </div>

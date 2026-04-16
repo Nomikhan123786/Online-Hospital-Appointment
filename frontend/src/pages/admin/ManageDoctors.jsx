@@ -62,7 +62,7 @@ const ManageDoctors = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-8 animate-[fadeIn_0.6s_ease-in]">
 
       <h1 className="text-3xl font-bold mb-8 text-gray-800">
         Doctor Management

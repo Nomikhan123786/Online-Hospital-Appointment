@@ -131,3 +131,75 @@ export const doctorPatients = async (req, res) => {
   }
 
 };
+//add schedual
+export const addSchedule = async (req, res) => {
+  try {
+    const { date, startTime,endTime } = req.body;
+    console.log("USER ID:", req.user.id);
+    const doctor = await Doctor.findOne({ user: req.user.id });
+    console.log("DOCTOR:", doctor);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Convert date → day
+    const day = new Date(date).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+
+    // Add new slot
+    doctor.schedule.push({
+      day,
+      startTime: startTime,
+      endTime: endTime, 
+    });
+
+    await doctor.save();
+
+    res.status(201).json({ message: "Slot added successfully", schedule: doctor.schedule });
+
+  } catch (error) {
+    res.status(500).json({ message: "Add schedule error" });
+  }
+};
+//get schedual
+export const getSchedule = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ user: req.user.id });
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.json(doctor.schedule);
+
+  } catch (error) {
+    res.status(500).json({ message: "Fetch schedule error" });
+  }
+};
+// DELETE schedule slot
+export const deleteSchedule = async (req, res) => {
+  try {
+    const { index } = req.params;
+
+    const doctor = await Doctor.findOne({ user: req.user.id });
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    if (!doctor.schedule[index]) {
+      return res.status(404).json({ message: "Slot not found" });
+    }
+
+    // Remove slot by index
+    doctor.schedule.splice(index, 1);
+
+    await doctor.save();
+
+    res.json({ message: "Slot deleted successfully", schedule: doctor.schedule });
+
+  } catch (error) {
+    res.status(500).json({ message: "Delete schedule error" });
+  }
+};

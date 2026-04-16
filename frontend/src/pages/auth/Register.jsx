@@ -5,6 +5,7 @@ import '../../style/auth.css'
 
 const Register = () => {
   const [form, setForm] = useState({});
+ 
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -13,8 +14,9 @@ const Register = () => {
     navigate("/verify-email");
   };
 
+
   return (
-    <div className="auth-container">
+    <div className="auth-container animate-[fadeIn_0.6s_ease-in]">
       <h2>Create Account</h2>
 
       <input placeholder="Name"

@@ -2,17 +2,14 @@ import express from "express";
 import { getDoctors } from "../controllers/doctorController.js";
 import Doctor from "../models/Doctor.js";
 import Appointment from "../models/Appointment.js";
+import { addSchedule, getSchedule } from "../controllers/doctorController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
+import { deleteSchedule } from "../controllers/doctorController.js";
 
-import {
-  doctorDashboard,
-  doctorSchedule,
-  doctorPatients,
-} from "../controllers/doctorController.js";
+import { doctorDashboard, doctorPatients} from "../controllers/doctorController.js";
 
 const router = express.Router();
-
 
 // GET ALL DOCTORS
 router.get("/", getDoctors);
@@ -32,7 +29,21 @@ router.get(
   "/schedule",
   authMiddleware,
   authorizeRoles("doctor"),
-  doctorSchedule
+  getSchedule
+);
+// doctor schedual add
+router.post(
+  "/schedule",
+  authMiddleware,
+  authorizeRoles("doctor"),
+  addSchedule
+);
+// DELETE SLOT
+router.delete(
+  "/schedule/:index",
+  authMiddleware,
+  authorizeRoles("doctor"),
+  deleteSchedule
 );
 
 
@@ -45,12 +56,18 @@ router.get(
 );
 
 
+
+
 // GET APPOINTMENTS
 router.get("/appointments", authMiddleware, async (req, res) => {
   try {
+     const doctor = await Doctor.findOne({ user: req.user._id });
 
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
     const appointments = await Appointment.find({
-      doctor: req.user._id
+      doctor: doctor._id
     })
       .populate("patient", "name email")
       .sort({ createdAt: -1 });
@@ -89,5 +106,6 @@ router.get("/:id", async (req, res) => {
 
   }
 });
+
 
 export default router;

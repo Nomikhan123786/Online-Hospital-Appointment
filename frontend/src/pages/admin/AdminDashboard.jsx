@@ -30,7 +30,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div>
+    <div className="animate-[fadeIn_0.6s_ease-in]">
       <h2>Admin Analytics</h2>
 
       <BarChart width={500} height={300} data={data}>
