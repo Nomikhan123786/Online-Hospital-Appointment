@@ -5,9 +5,24 @@ import generateOTP from "../utils/generateOTP.js";
 import sendEmail from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 
+const validatePassword = (password) => {
+  const regex =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  return regex.test(password);
+};
+
 // REGISTER
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
+
+  
+ if (!validatePassword(password)) {
+   return res.status(400).json({
+     message:
+       "Password must be 8+ chars, include uppercase, number & special character",
+    });
+  }
 
   const userExists = await User.findOne({ email });
   if (userExists)
