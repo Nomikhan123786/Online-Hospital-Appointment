@@ -13,7 +13,7 @@ import doctorRoutes from "./routes/doctorRoutes.js"
 import patientRoutes from "./routes/patientRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-
+import autoExpireAppointments from "./utils/autoExpireAppointments.js";
 
 import User from "./models/User.js";
 import bcrypt from "bcryptjs";
@@ -25,31 +25,12 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 
 
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     console.log("MongoDB Connected Successfully");
 
-    // AUTO CREATE ADMIN IF NOT EXISTS
-    const adminExists = await User.findOne({ role: "admin" });
-
-    if (!adminExists) {
-      const hashedPassword = await bcrypt.hash("noman890", 10);
-
-      await User.create({
-        name: "Noman Nawaz Khan",
-        email: "nomank7887682@gmail.com",
-        password: hashedPassword,
-        role: "admin",
-      });
-
-      console.log("Admin created successfully");
-      console.log("Email: admin@gmail.com");
-      console.log("Password: jdvjkxvx");
-    } else {
-      console.log("Admin already exists");
-    }
   })
+
   .catch((err) => {
     console.log("MongoDB Error:");
     console.log(err.message);
@@ -90,6 +71,10 @@ console.log(process.env.STRIPE_SECRET_KEY);
 
   // SERVER START
 
-server.listen(5000, () =>
-  console.log("Server running on port 5000")
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
 );
+
+autoExpireAppointments();

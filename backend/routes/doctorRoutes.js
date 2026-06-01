@@ -54,7 +54,23 @@ router.get(
   authorizeRoles("doctor"),
   doctorPatients
 );
+router.post("/smart-book", async (req, res) => {
+  const { date, time } = req.body;
 
+  const doctors = await Doctor.find();
+
+  const availableDoctors = doctors.filter(doc =>
+    isTimeSlotAvailable(doc.appointments, time)
+  );
+
+  if (availableDoctors.length === 0) {
+    return res.status(400).json({ msg: "No doctor available" });
+  }
+
+  const doctor = getLeastBusyDoctor(availableDoctors);
+
+  res.json({ doctor });
+});
 
 
 

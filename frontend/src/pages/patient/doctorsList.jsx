@@ -12,6 +12,7 @@ const DoctorsList = () => {
     };
     fetchDoctors();
   }, []);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6 animate-[fadeIn_0.6s_ease-in]">
@@ -36,9 +37,14 @@ const DoctorsList = () => {
           >
             
             {/* Doctor Avatar */}
-            <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold mb-4">
-              {doc.user.name.charAt(0)}
-            </div>
+            <img
+             src={
+               doc.profileImage ||
+               "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+             }
+             alt="doctor"
+             className="w-20 h-20 rounded-full object-cover border-4 border-blue-100"
+           />
 
             {/* Doctor Name */}
             <h3 className="text-lg font-semibold text-gray-800">
@@ -54,8 +60,8 @@ const DoctorsList = () => {
             <p className="text-gray-500 mt-2">
               Consultation Fee
             </p>
-            <p className="text-xl font-bold text-gray-800">
-              ${doc.fees}
+           <p className="text-xl font-bold text-gray-800">
+              Rs. {doc.consultationFee}
             </p>
 
             {/* Button */}

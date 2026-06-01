@@ -1,5 +1,54 @@
 import Appointment from "../models/Appointment.js";
+import { getLeastBusyDoctor, isTimeSlotAvailable } from "../utils/smartScheduler.js";
+import { getCache, setCache } from "../utils/cache.js";
+import sendEmail from "../utils/sendEmail.js";
+import Doctor from "../models/Doctor.js";
 
+
+export const emergencyAppointment = async (req, res) => {
+  try {
+
+    const { doctorId } = req.body;
+
+   const appointment = await Appointment.create({
+  doctor: doctorId,
+  patient: req.user._id,
+  isEmergency: true,
+  priority: "emergency",
+  date: new Date().toISOString().split("T")[0],
+  time: "Emergency",
+  status: "pending"
+});
+
+    console.log("🚨 Emergency alert sent");
+
+    res.status(201).json({
+      success: true,
+      message: "Emergency request sent",
+      appointment
+    });
+
+  } catch (error) {
+
+    console.log("Emergency Controller Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+export const getDoctors = async (req, res) => {
+  const cached = getCache("doctors");
+
+  if (cached) return res.json(cached);
+
+  const doctors = await Doctor.find();
+
+  setCache("doctors", doctors);
+
+  res.json(doctors);
+};
 export const createAppointment = async (req, res) => {
 
   try {
@@ -48,48 +97,31 @@ export const cancelAppointment = async (req, res) => {
   }
 };
 
+//book appointments
 export const bookAppointment = async (req, res) => {
-  try {
-    const appointment = await Appointment.create({
-      patient: req.user._id,
-      doctor: req.body.doctor,
-      date: req.body.date,
-      time: req.body.time,
-    });
+  const { time } = req.body;
 
-    res.status(201).json(appointment);
+  const doctors = await Doctor.find();
+  const appointments = await Appointment.find();
 
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
+  const doctorId = getLeastBusyDoctor(doctors, appointments);
+
+  if (!isTimeSlotAvailable(appointments, doctorId, time)) {
+    return res.status(400).json({ msg: "Time slot not available" });
   }
+
+  const newAppointment = new Appointment({
+    doctorId,
+    time,
+    patientId: req.user.id
+  });
+
+  await newAppointment.save();
+
+  res.json(newAppointment);
 };
 
-export const updateAppointmentStatus = async (req, res) => {
-  try {
 
-    const io = req.app.get("io");   // ✅ moved here
-
-    const appointment = await Appointment.findById(req.params.id);
-
-    appointment.status = req.body.status;
-    await appointment.save();
-
-   
-
-    // Emit real-time update to patient
-    io.to(appointment.patient.toString()).emit("appointmentUpdated", {
-      message: "Your appointment status updated",
-      status: appointment.status,
-    });
-
-    res.json({ message: "Appointment updated" });
-
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: error.message });
-  }
-};
 
 export const getMyAppointments = async (req, res) => {
   try {
@@ -104,22 +136,133 @@ export const getMyAppointments = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//payment approved 
-export const updatePaymentStatus = async (req, res) => {
+
+
+//Appoved or reject
+export const updateAppointmentStatus = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id);
+
+    const appointment = await Appointment.findById(req.params.id)
+      .populate({
+       path: "patient",
+       select: "name email"
+      })
+      .populate({
+        path: "doctor",
+        populate: {
+          path: "user"
+        }
+      });
 
     if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+      return res.status(404).json({
+        message: "Appointment not found"
+      });
     }
 
+    // Update status
+    appointment.status = req.body.status;
+
+    await appointment.save();
+
+    //  SEND EMAIL
+    if (appointment.patient?.email) {
+    await sendEmail(
+      appointment.patient.email,
+      "Appointment Status Updated",
+      `
+Hello ${appointment.patient.name},
+
+Your appointment with Dr. ${appointment.doctor?.user?.name} has been ${appointment.status.toUpperCase()}.
+
+Date: ${appointment.date}
+Time: ${appointment.time}
+
+Thank you for using our hospital system.
+      `
+    );
+    console.log("Appointment email sent")
+  }else {
+
+    console.log("Patient email not found");
+
+  }
+
+    res.json({
+      message: "Appointment updated & email sent"
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
+//payment approved or rejected
+export const updatePaymentStatus = async (req, res) => {
+  try {
+
+    const appointment = await Appointment.findById(req.params.id)
+      .populate({
+        path: "patient",
+        select: "name email"
+      });
+
+    if (!appointment) {
+      return res.status(404).json({
+        message: "Appointment not found"
+      });
+    }
+
+    // Update payment
     appointment.paymentStatus = "paid";
 
     await appointment.save();
 
-    res.json({ message: "Payment marked as paid" });
+    console.log("PATIENT:", appointment.patient);
+
+    //  Send Email
+    if (appointment.patient?.email) {
+
+      await sendEmail(
+        appointment.patient.email,
+        "Payment Successful",
+        `
+        Hello ${appointment.patient?.name},
+
+        Your payment has been marked as PAID 
+
+       Appointment Date: ${appointment.date}
+       Appointment Time: ${appointment.time}
+
+       Thank you for using our hospital system.
+        `
+      );
+
+      console.log(" Payment email sent");
+
+    } else {
+
+      console.log("Patient email not found");
+
+    }
+
+    res.json({
+      success: true,
+      message: "Payment updated successfully"
+    });
 
   } catch (error) {
-    res.status(500).json({ message: "Payment update failed" });
+
+    console.log("PAYMENT ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };
+

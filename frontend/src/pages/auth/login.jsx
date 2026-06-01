@@ -6,49 +6,65 @@ import "../../style/auth.css";
 
 const Login = () => {
 
-  const [form, setForm] = useState({});
-  const [error, setError] = useState("");   // error state
-  
-  const [showPassword, setShowPassword] = useState(false);
-  
-  const validatePassword = (password) => {
-  const regex =
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
 
-  return regex.test(password);
- };
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
 
-  if (!validatePassword(form.password)) {
-    setError(
-      "Password must be 8+ chars, include uppercase, number & special character"
-    );
-    return;
-  }
+    //  Basic validation only
+    if (!form.email || !form.password) {
+      setError("Please enter email and password");
+      return;
+    }
 
-  try {
-    await API.post("/auth/register", form);
-    alert("OTP sent to your Email");
-    navigate("/verify-email");
-  } catch (err) {
-    setError("Registration failed");
-  }
- };
-
-  return (
-
-    <div className="auth-container animate-[fadeIn_0.6s_ease-in]">
-
-      <h2>Login</h2>
+    try {
+      setError("");
 
       
+      const res = await API.post("/auth/login", {
+        email: form.email,
+        password: form.password,
+      });
+
+      
+      login(res.data);
+
+      
+      if (res.data.role === "admin") {
+        navigate("/admin/dashboard");
+      } 
+      else if(res.data.role==="doctor"){
+         navigate("/doctor/dashboard")
+      }
+      else  {
+        navigate("/");
+      }
+
+    } catch (err) {
+      console.log(err.response?.data || err.message);
+
+      setError(
+        err.response?.data?.message || "Login failed"
+      );
+    }
+  };
+
+  return (
+    <div className="auth-container animate-[fadeIn_0.6s_ease-in]">
+      <h2>Login</h2>
 
       <input
+        type="email"
         placeholder="Email"
+        value={form.email}
         onChange={(e) =>
           setForm({ ...form, email: e.target.value })
         }
@@ -58,20 +74,20 @@ const Login = () => {
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
+          value={form.password}
           onChange={(e) =>
             setForm({ ...form, password: e.target.value })
           }
         />
-      
+
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
           style={{
             position: "absolute",
             right: "20px",
-           
             background: "none",
-            width:"20px",
+            width: "20px",
             border: "none",
             cursor: "pointer"
           }}
@@ -83,10 +99,11 @@ const Login = () => {
       {/* ERROR MESSAGE */}
       {error && (
         <p style={{ color: "red", marginBottom: "10px" }}>
-          {error}  <br />
-          <span style={{color:"blue"}}><Link to="/register"> If not Registered click here</Link></span>
+          {error} <br />
+          <span style={{ color: "blue" }}>
+            <Link to="/register">If not Registered click here</Link>
+          </span>
         </p>
-        
       )}
 
       <button onClick={handleLogin}>
@@ -98,9 +115,7 @@ const Login = () => {
           Forgot Password?
         </Link>
       </div>
-
     </div>
-
   );
 };
 

@@ -32,6 +32,8 @@ import Reports from "./pages/admin/Reports";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import CreateAdmin from "./pages/CreateAdmin";
+
 
 
 function App() {
@@ -40,12 +42,13 @@ function App() {
       {/* Router must wrap everything that uses Link/NavLink */}
       <Router> 
         <Navbar/>
+        
         <Routes>
           {/* Public Routes */}
+          <Route path="/create-admin" element={<CreateAdmin />} />
           
-          <Route path="/" element={<Home />} />
            
-          <Route path="/doctors" element={<DoctorsList />} />
+          
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
@@ -53,13 +56,29 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
 
            
-
+            
           {/* Patient Routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute role="patient">
+                <Home />
+              </ProtectedRoute>
+            }
+            />
           <Route
             path="/doctor/:id"
             element={
               <ProtectedRoute role="patient">
                 <DoctorDetails />
+              </ProtectedRoute>
+            }
+            />
+          <Route
+            path="/doctors"
+            element={
+              <ProtectedRoute role="patient">
+                <DoctorsList />
               </ProtectedRoute>
             }
             />

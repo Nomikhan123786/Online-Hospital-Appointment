@@ -1,83 +1,116 @@
 import express from "express";
+
 import Appointment from "../models/Appointment.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
-import { cancelAppointment } from "../controllers/appointmentController.js";
-import { updatePaymentStatus } from "../controllers/appointmentController.js";
+
 import {
   createAppointment,
+  cancelAppointment,
   updateAppointmentStatus,
+  updatePaymentStatus,
+  emergencyAppointment,
+  
 } from "../controllers/appointmentController.js";
+
+import { authMiddleware } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-router.post("/", authMiddleware, createAppointment);
-// Book appointment
-router.post("/", authMiddleware, async (req, res) => {
-  try {
-    const appointment = await Appointment.create({
-      patient: req.user._id,
-      doctor: req.body.doctorId,
-      date: req.body.date,
-      time: req.body.time,
-      status: "pending",
-    });
 
-    res.status(201).json(appointment);
-  } catch (error) {
-    console.log("BOOKING ERROR:", error); 
-    res.status(500).json({ message: "Booking Failed" });
-  }
-});
-//cancel Appointments
+// Create Appointment
+router.post(
+  "/",
+  authMiddleware,
+  createAppointment
+);
 
-router.delete("/:id", authMiddleware, cancelAppointment);
-// Get my appointments
-router.get("/my", authMiddleware, async (req, res) => {
-  try {
-    const appointments = await Appointment.find({
-      $or: [{ patient: req.user._id }, { doctor: req.user._id }],
-    })
-      .populate({
-      path: "doctor",
-      select: "specialization user",
-      populate: {
-        path: "user",
-        select: "name email"
-      }
-    }); 
-    
 
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching appointments" });
-  }
-});
 
-//put appointments
+// Emergency Appointment
 
-router.put("/:id", authMiddleware, async (req, res) => {
 
-  try {
+router.post(
+  "/emergency",
+  authMiddleware,
+  emergencyAppointment
+);
 
-    const appointment = await Appointment.findById(req.params.id);
 
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+
+// Get My Appointments
+
+
+router.get(
+  "/my",
+  authMiddleware,
+  async (req, res) => {
+    try {
+
+      const appointments = await Appointment.find({
+        $or: [
+          { patient: req.user._id },
+          { doctor: req.user._id },
+        ],
+      }).populate({
+        path: "doctor",
+        select: "specialization user",
+        populate: {
+          path: "user",
+          select: "name email",
+        },
+      });
+
+      res.json(appointments);
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+        message: "Error fetching appointments",
+      });
+
     }
-
-    appointment.status = req.body.status;
-
-    await appointment.save();
-
-    res.json({ message: "Status updated successfully" });
-
-  } catch (error) {
-
-    res.status(500).json({ message: "Update failed" });
-
   }
+);
 
-});
 
-router.put("/:id", authMiddleware, updateAppointmentStatus);
-router.put("/payment/:id", authMiddleware, updatePaymentStatus);
+
+
+// IMPORTANT:
+// Specific route FIRST
+
+
+
+
+
+// Patient Cancel Appointment
+
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  cancelAppointment
+);
+
+
+// Update Appointment Status
+
+
+router.put(
+  "/:id",
+  authMiddleware,
+  updateAppointmentStatus
+);
+
+
+
+// Update Payment Status
+
+
+router.put(
+  "/payment/:id",
+  authMiddleware,
+  updatePaymentStatus
+);
+
 
 export default router;

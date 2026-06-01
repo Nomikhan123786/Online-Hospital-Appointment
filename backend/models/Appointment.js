@@ -6,6 +6,10 @@ const appointmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    isEmergency: {
+     type: Boolean,
+     default: false
+     },
     doctor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
@@ -14,7 +18,7 @@ const appointmentSchema = new mongoose.Schema(
     time: String,
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "completed","cancelled"],
+      enum: ["pending", "approved", "rejected", "completed","cancelled","expired"],
       default: "pending",
     },
     paymentMethod: {
@@ -28,6 +32,7 @@ const appointmentSchema = new mongoose.Schema(
       default: "pending",
     },
   
+  
   date: String,
   time: String,
 
@@ -35,9 +40,18 @@ const appointmentSchema = new mongoose.Schema(
     type: String,
     default: "pending",
   },
+    priority: {
+     type: String,
+     enum: ["normal", "emergency"],
+     default: "normal"
+    }
+    
+    
 
   },
+  
   { timestamps: true }
+  
 );
 
 export default mongoose.model("Appointment", appointmentSchema);

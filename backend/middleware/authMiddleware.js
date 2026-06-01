@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+
 export const authMiddleware = async (req, res, next) => {
   let token;
 
@@ -26,6 +27,13 @@ export const authMiddleware = async (req, res, next) => {
     }
   }
 
+
   //  IMPORTANT PART 
   return res.status(401).json({ message: "No token, not authorized" });
+};
+export const isAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ msg: "Access denied" });
+  }
+  next();
 };

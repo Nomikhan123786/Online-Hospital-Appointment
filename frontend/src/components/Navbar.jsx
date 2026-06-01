@@ -43,7 +43,6 @@ const Navbar = () => {
         role ==="doctor" && (
           <>
           <Link to="/doctor/dashboard"    className="text-gray-700 hover:text-blue-600  hover:text-2xl">Dashboard</Link>         
-          <Link to="/doctor/patients"     className="text-gray-700 hover:text-blue-600  hover:text-2xl">Patients</Link>
           <Link to="/doctor/schedule" className="text-gray-700 hover:text-blue-600  hover:text-2xl">Schedule</Link>
           </>
         )

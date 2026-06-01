@@ -3,14 +3,46 @@ import Appointment from "../models/Appointment.js";
 import Doctor from "../models/Doctor.js";
 import bcrypt from "bcryptjs";
 
+// utils/smartScheduler.js
+export const getLeastBusyDoctor = async (doctors) => {
+  let minAppointments = Infinity;
+  let selectedDoctor = null;
+
+  doctors.forEach(doc => {
+    if (doc.appointments.length < minAppointments) {
+      minAppointments = doc.appointments.length;
+      selectedDoctor = doc;
+    }
+  });
+
+  return selectedDoctor;
+};
+
+export const isTimeSlotAvailable = (appointments, newTime) => {
+  return !appointments.some(app => app.time === newTime);
+};
+
 export const addDoctor = async (req, res) => {
+
   try {
-    const { name, email, password, specialization } = req.body;
+
+    console.log("BODY:", req.body);
+
+    const {
+      name,
+      email,
+      password,
+      specialization,
+      consultationFee,
+      profileImage,
+    } = req.body;
 
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ message: "Doctor already exists" });
+      return res.status(400).json({
+        message: "Doctor already exists",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,29 +57,79 @@ export const addDoctor = async (req, res) => {
     const doctor = await Doctor.create({
       user: user._id,
       specialization,
+      consultationFee: Number(consultationFee) || 0,
+      profileImage: profileImage || "",
     });
 
     res.status(201).json(doctor);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    console.log("ADD DOCTOR ERROR:");
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+
   }
+
 };
+
 
 export const getDoctors = async (req, res) => {
   try {
-    const doctors = await Doctor.find().populate("user", "name email");
-    res.json(doctors);
+
+    const doctors = await Doctor.find()
+      .populate("user", "name email");
+
+    // Remove broken doctors
+    const filteredDoctors = doctors.filter(
+      (doc) => doc.user !== null
+    );
+
+    res.json(filteredDoctors);
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+
   }
 };
 
 export const deleteDoctor = async (req, res) => {
   try {
+
+    const doctor = await Doctor.findById(req.params.id);
+
+    if (!doctor) {
+      return res.status(404).json({
+        message: "Doctor not found",
+      });
+    }
+
+    // Delete linked user
+    await User.findByIdAndDelete(doctor.user);
+
+    // Delete doctor
     await Doctor.findByIdAndDelete(req.params.id);
-    res.json({ message: "Doctor deleted successfully" });
+
+    res.json({
+      message: "Doctor deleted successfully",
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+
   }
 };
 

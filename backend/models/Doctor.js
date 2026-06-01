@@ -9,8 +9,16 @@ const doctorSchema = mongoose.Schema(
     },
     specialization: String,
     experience: Number,
-    fees: Number,
+    
     hospitalName: String,
+    profileImage: {
+      type: String,
+      default: ""
+    },
+    consultationFee: {
+     type: Number,
+     default: 0
+     },
     schedule: [
       {
         day: String, // Monday, Tuesday

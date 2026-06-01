@@ -8,9 +8,14 @@ import {
   getDoctors,
   deleteDoctor,
 } from "../controllers/doctorController.js";
+import { isAdmin } from "../middleware/authMiddleware.js";
+
+
 
 const router = express.Router();
-
+router.get("/admin-data", isAdmin, (req, res) => {
+  res.json({ msg: "Welcome Admin" });
+});
 // ADD DOCTOR
 router.post("/doctors", authMiddleware, authorizeRoles("admin"), addDoctor);
 
