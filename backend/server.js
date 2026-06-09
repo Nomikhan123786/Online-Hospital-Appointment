@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-
 import cors from "cors";
 import testRoutes from "./routes/testRoutes.js";
 import mongoose from "mongoose";
@@ -38,16 +35,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 const app = express();
-const server = http.createServer(app);
-
 app.use(cors());
 app.use(express.json());
-
-const io = new Server(server, {
-  cors: { origin: "*" },
-});
-
-app.set("io", io);
 
 
 app.use("/api/test", testRoutes);
@@ -56,21 +45,11 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/doctors",doctorRoutes)
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/admin", adminRoutes);
-
-
-  // SOCKET CONNECTION
-
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("joinUserRoom", (userId) => {
-    socket.join(userId);
-  });
-});
 console.log(process.env.STRIPE_SECRET_KEY);
 
   // SERVER START
 
+<<<<<<< HEAD
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () =>
@@ -78,3 +57,8 @@ server.listen(PORT, () =>
 );
 
 autoExpireAppointments();
+=======
+app.listen(5000, () =>
+  console.log("Server running on port 5000")
+);
+>>>>>>> 715f96e (Removed the socket.io)

@@ -21,11 +21,15 @@
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
     "mongoose": "^9.2.3",
+<<<<<<< HEAD
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.1",
     "socket.io": "^4.8.3"
+=======
+    "nodemailer": "^8.0.1"
+>>>>>>> 715f96e (Removed the socket.io)
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

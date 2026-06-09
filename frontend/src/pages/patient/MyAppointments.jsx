@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useContext } from "react";
 import API from "../../services/axiosInstance";
-import socket from "../../../socket";
+
 import { AuthContext } from "../../context/AuthContext";
 
 const MyAppointments = () => {
@@ -11,11 +11,7 @@ const MyAppointments = () => {
 
   useEffect(() => {
 
-    socket.emit("joinUserRoom", user._id);
-
-    socket.on("appointmentUpdated", (data) => {
-      alert(data.message);
-    });
+   
 
   }, [user]);
 
