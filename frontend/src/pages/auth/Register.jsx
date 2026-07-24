@@ -8,13 +8,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   // ✅ Password Validation Function
   const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
   };
 
@@ -29,12 +29,17 @@ const Register = () => {
 
   // ✅ Submit
   const handleSubmit = async () => {
+    if (loading) return;
+
     if (!validatePassword(password)) {
       setError(
-        "Password must be 8+ chars, include uppercase, number & special character"
+        "Password must be 8+ chars, include uppercase, number & special character",
       );
       return;
     }
+
+    setLoading(true);
+    setError("");
 
     try {
       await API.post("/auth/register", {
@@ -44,7 +49,9 @@ const Register = () => {
       alert("OTP sent to your Email");
       navigate("/verify-email");
     } catch (err) {
-      setError("Registration failed");
+      setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,16 +61,12 @@ const Register = () => {
 
       <input
         placeholder="Name"
-        onChange={(e) =>
-          setForm({ ...form, name: e.target.value })
-        }
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
       />
 
       <input
         placeholder="Email"
-        onChange={(e) =>
-          setForm({ ...form, email: e.target.value })
-        }
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
       />
 
       {/* Password Field */}
@@ -83,7 +86,7 @@ const Register = () => {
           style={{
             position: "absolute",
             right: "20px",
-            width:"20px",
+            width: "20px",
             background: "none",
             border: "none",
             cursor: "pointer",
@@ -119,7 +122,9 @@ const Register = () => {
       {/* Error */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <button onClick={handleSubmit}>Register</button>
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Registering..." : "Register"}
+      </button>
 
       <div className="auth-link">
         <Link to="/login">Already have account?</Link>

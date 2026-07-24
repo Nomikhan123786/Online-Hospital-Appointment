@@ -13,10 +13,10 @@ const validatePassword = (password) => {
 };
 
 // REGISTER
+
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  
  if (!validatePassword(password)) {
    return res.status(400).json({
      message:
@@ -24,29 +24,43 @@ export const registerUser = async (req, res) => {
     });
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists)
-    return res.status(400).json({ message: "User already exists" });
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists)
+      return res.status(400).json({ message: "User already exists" });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const otp = generateOTP();
+    const otp = generateOTP();
 
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    emailOTP: otp,
-    emailOTPExpire: Date.now() + 10 * 60 * 1000,
-  });
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      emailOTP: otp,
+      emailOTPExpire: Date.now() + 10 * 60 * 1000,
+    });
 
-  await sendEmail(
-    email,
-    "Email Verification Code",
-    `Your verification code is: ${otp}`
-  );
+    console.log(`[DEV] OTP for ${email}: ${otp}`);
 
-  res.json({ message: "OTP sent to email" });
+    try {
+      await sendEmail(
+        email,
+        "Email Verification Code",
+        `Your verification code is: ${otp}`
+      );
+    } catch (err) {
+      console.log("Email sending failed (check EMAIL_USER/EMAIL_PASS):", err.message);
+    }
+
+    res.json({ message: "OTP sent to email" });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+    console.error("Register error:", err.message);
+    return res.status(500).json({ message: "Something went wrong, please try again" });
+  }
 };
 
 
