@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../../services/axiosInstance";
 import { Link } from "react-router-dom";
-import '../../style/index.css'
+import "../../style/index.css";
 const DoctorsList = () => {
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      const { data } = await axios.get("http://localhost:5000/api/doctors");
+      const { data } = await API.get("/doctors");
       setDoctors(data);
     };
     fetchDoctors();
@@ -15,12 +15,9 @@ const DoctorsList = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-6 animate-[fadeIn_0.6s_ease-in]">
-      
       {/* Page Header */}
       <div className="max-w-7xl mx-auto mb-10 text-center">
-        <h2 className="text-4xl font-bold text-gray-800">
-          Available Doctors
-        </h2>
+        <h2 className="text-4xl font-bold text-gray-800">Available Doctors</h2>
         <p className="text-gray-500 mt-2">
           Choose from our experienced specialists
         </p>
@@ -28,13 +25,11 @@ const DoctorsList = () => {
 
       {/* Doctors Grid */}
       <div className="max-w-7xl mx-auto grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        
         {doctors.map((doc) => (
           <div
             key={doc._id}
             className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6 flex flex-col items-center text-center"
           >
-            
             {/* Doctor Avatar */}
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold mb-4">
               {doc.user.name.charAt(0)}
@@ -51,12 +46,8 @@ const DoctorsList = () => {
             </p>
 
             {/* Fees */}
-            <p className="text-gray-500 mt-2">
-              Consultation Fee
-            </p>
-            <p className="text-xl font-bold text-gray-800">
-              ${doc.fees}
-            </p>
+            <p className="text-gray-500 mt-2">Consultation Fee</p>
+            <p className="text-xl font-bold text-gray-800">${doc.fees}</p>
 
             {/* Button */}
             <Link
@@ -67,7 +58,6 @@ const DoctorsList = () => {
             </Link>
           </div>
         ))}
-
       </div>
     </div>
   );
