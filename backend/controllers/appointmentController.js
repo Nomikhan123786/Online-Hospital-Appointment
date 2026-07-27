@@ -1,4 +1,5 @@
 import Appointment from "../models/Appointment.js";
+import sendEmail from "../utils/sendEmail.js";
 
 export const createAppointment = async (req, res) => {
 
@@ -70,18 +71,49 @@ export const updateAppointmentStatus = async (req, res) => {
 
     const io = req.app.get("io");   // ✅ moved here
 
-    const appointment = await Appointment.findById(req.params.id);
+    const appointment = await Appointment.findById(req.params.id)
+      .populate("patient", "name email")
+      .populate({
+        path: "doctor",
+        select: "specialization user",
+        populate: { path: "user", select: "name" },
+      });
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
 
     appointment.status = req.body.status;
     await appointment.save();
 
-   
-
     // Emit real-time update to patient
-    io.to(appointment.patient.toString()).emit("appointmentUpdated", {
+    io.to(appointment.patient._id.toString()).emit("appointmentUpdated", {
       message: "Your appointment status updated",
       status: appointment.status,
     });
+
+    // Send email to patient when doctor accepts or rejects the appointment
+    if (appointment.patient?.email) {
+      const doctorName = appointment.doctor?.user?.name || "your doctor";
+
+      if (appointment.status === "approved") {
+        sendEmail(
+          appointment.patient.email,
+          "Appointment Accepted",
+          `Hi ${appointment.patient.name}, your appointment with Dr. ${doctorName} on ${appointment.date} at ${appointment.time} has been accepted.`
+        ).catch((err) =>
+          console.log("Email sending failed (appointment accepted):", err.message)
+        );
+      } else if (appointment.status === "rejected") {
+        sendEmail(
+          appointment.patient.email,
+          "Appointment Rejected",
+          `Hi ${appointment.patient.name}, unfortunately your appointment with Dr. ${doctorName} on ${appointment.date} at ${appointment.time} has been rejected. Please book another slot.`
+        ).catch((err) =>
+          console.log("Email sending failed (appointment rejected):", err.message)
+        );
+      }
+    }
 
     res.json({ message: "Appointment updated" });
 
@@ -107,7 +139,13 @@ export const getMyAppointments = async (req, res) => {
 //payment approved 
 export const updatePaymentStatus = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id);
+    const appointment = await Appointment.findById(req.params.id)
+      .populate("patient", "name email")
+      .populate({
+        path: "doctor",
+        select: "specialization user",
+        populate: { path: "user", select: "name" },
+      });
 
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -116,6 +154,19 @@ export const updatePaymentStatus = async (req, res) => {
     appointment.paymentStatus = "paid";
 
     await appointment.save();
+
+    // Send email to patient confirming payment received
+    if (appointment.patient?.email) {
+      const doctorName = appointment.doctor?.user?.name || "your doctor";
+
+      sendEmail(
+        appointment.patient.email,
+        "Payment Received",
+        `Hi ${appointment.patient.name}, we have received your payment for the appointment with Dr. ${doctorName} on ${appointment.date} at ${appointment.time}.`
+      ).catch((err) =>
+        console.log("Email sending failed (payment received):", err.message)
+      );
+    }
 
     res.json({ message: "Payment marked as paid" });
 

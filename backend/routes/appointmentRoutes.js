@@ -51,31 +51,7 @@ router.get("/my", authMiddleware, async (req, res) => {
   }
 });
 
-//put appointments
-
-router.put("/:id", authMiddleware, async (req, res) => {
-
-  try {
-
-    const appointment = await Appointment.findById(req.params.id);
-
-    if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
-
-    appointment.status = req.body.status;
-
-    await appointment.save();
-
-    res.json({ message: "Status updated successfully" });
-
-  } catch (error) {
-
-    res.status(500).json({ message: "Update failed" });
-
-  }
-
-});
+//put appointments (accept/reject) - status update, sends email + realtime notification
 
 router.put("/:id", authMiddleware, updateAppointmentStatus);
 router.put("/payment/:id", authMiddleware, updatePaymentStatus);
