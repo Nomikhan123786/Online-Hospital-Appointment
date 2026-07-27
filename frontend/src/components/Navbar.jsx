@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import '../style/index.css'
+import "../style/index.css";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -34,24 +34,37 @@ const Navbar = () => {
         <div className="hidden sm:flex sm:items-center sm:gap-6">
           {role === "admin" && (
             <>
-              <Link to="/admin/dashboard" className={linkClass}>Dashboard</Link>
-              <Link to="/admin/doctors" className={linkClass}>Manage Doctors</Link>
+              <Link to="/admin/dashboard" className={linkClass}>
+                Dashboard
+              </Link>
+              <Link to="/admin/doctors" className={linkClass}>
+                Manage Doctors
+              </Link>
             </>
           )}
 
           {role === "patient" && (
             <>
-              <Link to="/" className={linkClass}>Home</Link>
-              <Link to="/dashboard" className={linkClass}>Dashboard</Link>
-              <Link to="/appointments" className={linkClass}>Appointments</Link>
+              <Link to="/" className={linkClass}>
+                Home
+              </Link>
+              <Link to="/dashboard" className={linkClass}>
+                Dashboard
+              </Link>
+              <Link to="/appointments" className={linkClass}>
+                Appointments
+              </Link>
             </>
           )}
 
           {role === "doctor" && (
             <>
-              <Link to="/doctor/dashboard" className={linkClass}>Dashboard</Link>
-              <Link to="/doctor/patients" className={linkClass}>Patients</Link>
-              <Link to="/doctor/schedule" className={linkClass}>Schedule</Link>
+              <Link to="/doctor/dashboard" className={linkClass}>
+                Dashboard
+              </Link>
+              <Link to="/doctor/schedule" className={linkClass}>
+                Schedule
+              </Link>
             </>
           )}
 
@@ -66,7 +79,10 @@ const Navbar = () => {
 
           {!user && (
             <>
-              <Link to="/login" className="text-ink-600 px-4 py-2 rounded-lg hover:text-brand-600 font-medium transition-colors">
+              <Link
+                to="/login"
+                className="text-ink-600 px-4 py-2 rounded-lg hover:text-brand-600 font-medium transition-colors"
+              >
                 Login
               </Link>
               <Link to="/register" className="btn-primary text-sm">
@@ -82,9 +98,15 @@ const Navbar = () => {
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          <span className={`block h-0.5 w-6 bg-ink-800 transition-transform ${open ? "rotate-45 translate-y-2" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-ink-800 transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-ink-800 transition-transform ${open ? "-rotate-45 -translate-y-2" : ""}`} />
+          <span
+            className={`block h-0.5 w-6 bg-ink-800 transition-transform ${open ? "rotate-45 translate-y-2" : ""}`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-ink-800 transition-opacity ${open ? "opacity-0" : ""}`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-ink-800 transition-transform ${open ? "-rotate-45 -translate-y-2" : ""}`}
+          />
         </button>
       </div>
 
@@ -93,30 +115,77 @@ const Navbar = () => {
         <div className="sm:hidden mt-4 pb-2 border-t border-ink-100 pt-3 flex flex-col gap-1">
           {role === "admin" && (
             <>
-              <Link to="/admin/dashboard" className={linkClass} onClick={() => setOpen(false)}>Dashboard</Link>
-              <Link to="/admin/doctors" className={linkClass} onClick={() => setOpen(false)}>Manage Doctors</Link>
+              <Link
+                to="/admin/dashboard"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/admin/doctors"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Manage Doctors
+              </Link>
             </>
           )}
 
           {role === "patient" && (
             <>
-              <Link to="/" className={linkClass} onClick={() => setOpen(false)}>Home</Link>
-              <Link to="/dashboard" className={linkClass} onClick={() => setOpen(false)}>Dashboard</Link>
-              <Link to="/appointments" className={linkClass} onClick={() => setOpen(false)}>Appointments</Link>
+              <Link to="/" className={linkClass} onClick={() => setOpen(false)}>
+                Home
+              </Link>
+              <Link
+                to="/dashboard"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/appointments"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Appointments
+              </Link>
             </>
           )}
 
           {role === "doctor" && (
             <>
-              <Link to="/doctor/dashboard" className={linkClass} onClick={() => setOpen(false)}>Dashboard</Link>
-              <Link to="/doctor/patients" className={linkClass} onClick={() => setOpen(false)}>Patients</Link>
-              <Link to="/doctor/schedule" className={linkClass} onClick={() => setOpen(false)}>Schedule</Link>
+              <Link
+                to="/doctor/dashboard"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/doctor/patients"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Patients
+              </Link>
+              <Link
+                to="/doctor/schedule"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Schedule
+              </Link>
             </>
           )}
 
           {user && (
             <button
-              onClick={() => { setOpen(false); handleLogout(); }}
+              onClick={() => {
+                setOpen(false);
+                handleLogout();
+              }}
               className="text-left text-ink-600 py-2 font-medium hover:text-brand-600"
             >
               Logout
@@ -125,8 +194,20 @@ const Navbar = () => {
 
           {!user && (
             <>
-              <Link to="/login" className={linkClass} onClick={() => setOpen(false)}>Login</Link>
-              <Link to="/register" className={linkClass} onClick={() => setOpen(false)}>Register</Link>
+              <Link
+                to="/login"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                Register
+              </Link>
             </>
           )}
         </div>
