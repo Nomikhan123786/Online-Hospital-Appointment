@@ -6,7 +6,7 @@ const sendEmail = async (email, subject, text) => {
 
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #f8fafc; border-radius: 12px;">
-      <h2 style="color: #1e293b; margin-bottom: 8px;">MediCare+</h2>
+      <h2 style="color: #1e293b; margin-bottom: 8px;">Online Hospital Appointment+</h2>
       <p style="color: #475569; font-size: 15px;">${introText}</p>
       ${
         otp
@@ -29,7 +29,7 @@ const sendEmail = async (email, subject, text) => {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      sender: { email: process.env.EMAIL_USER, name: "MediCare+" },
+      sender: { email: process.env.EMAIL_USER, name: "Online Hospital Appointment+" },
       to: [{ email }],
       subject,
       htmlContent,

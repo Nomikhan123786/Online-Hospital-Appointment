@@ -47,7 +47,7 @@ const DashboardLayout = ({ children, title, subtitle }) => {
           +
         </div>
         <span className="font-display font-bold text-white text-lg">
-          MediCare<span className="text-brand-300">+</span>
+          Online Hospital Appointment<span className="text-brand-300">+</span>
         </span>
       </div>
 
@@ -64,7 +64,11 @@ const DashboardLayout = ({ children, title, subtitle }) => {
                   ? "bg-white/10 text-white"
                   : "text-ink-400 hover:text-white hover:bg-white/5"
               }`}
-              style={active ? { boxShadow: "inset 2px 0 0 var(--color-brand-400)" } : undefined}
+              style={
+                active
+                  ? { boxShadow: "inset 2px 0 0 var(--color-brand-400)" }
+                  : undefined
+              }
             >
               <span className="text-base">{item.icon}</span>
               {item.label}
@@ -86,7 +90,10 @@ const DashboardLayout = ({ children, title, subtitle }) => {
   );
 
   return (
-    <div className="min-h-screen flex" style={{ background: "var(--color-ink-50)" }}>
+    <div
+      className="min-h-screen flex"
+      style={{ background: "var(--color-ink-50)" }}
+    >
       {/* Desktop sidebar */}
       <aside
         className="hidden lg:flex lg:flex-col w-64 shrink-0"
@@ -129,7 +136,9 @@ const DashboardLayout = ({ children, title, subtitle }) => {
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-xs sm:text-sm text-ink-400 truncate">{subtitle}</p>
+                <p className="text-xs sm:text-sm text-ink-400 truncate">
+                  {subtitle}
+                </p>
               )}
             </div>
           </div>

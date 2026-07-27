@@ -229,7 +229,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-ink-900 mb-4">
-              Why Patients Choose MediCare+
+              Why Patients Choose Online Hospital Appointment+
             </h2>
             <p className="text-ink-600 text-sm sm:text-base">
               Everything you need for accessible, transparent, and secure

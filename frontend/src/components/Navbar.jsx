@@ -26,7 +26,7 @@ const Navbar = () => {
             +
           </div>
           <h1 className="text-lg sm:text-xl font-display font-bold text-ink-900">
-            MediCare<span className="text-brand-600">+</span>
+            Online Hospital Appointment<span className="text-brand-600">+</span>
           </h1>
         </Link>
 
