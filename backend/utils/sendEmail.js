@@ -1,6 +1,6 @@
-const sendEmail = async (email, subject, text) => {
-  // Extract the OTP (last sequence of digits in the message) to style it
-  const otpMatch = text.match(/(\d{4,8})/);
+const sendEmail = async (email, subject, text, isOtp = false) => {
+  // Only style as an OTP box when caller explicitly says it's an OTP email
+  const otpMatch = isOtp ? text.match(/(\d{4,8})/) : null;
   const otp = otpMatch ? otpMatch[1] : null;
   const introText = otp ? text.split(otp)[0].trim() : text;
 

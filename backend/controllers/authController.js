@@ -39,6 +39,7 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
       emailOTP: otp,
       emailOTPExpire: Date.now() + 10 * 60 * 1000,
+    
     });
 
     console.log(`[DEV] OTP for ${email}: ${otp}`);
@@ -47,7 +48,8 @@ export const registerUser = async (req, res) => {
       await sendEmail(
         email,
         "Email Verification Code",
-        `Your verification code is: ${otp}`
+        `Your verification code is: ${otp}`,
+        true
       );
     } catch (err) {
       console.log("Email sending failed (check EMAIL_USER/EMAIL_PASS):", err.message);
@@ -147,7 +149,8 @@ export const forgotPassword = async (req, res) => {
   await sendEmail(
     email,
     "Password Reset Code",
-    `Your password reset code is: ${otp}`
+    `Your password reset code is: ${otp}`,
+    true
   );
 
   res.json({ message: "Reset OTP sent to email" });
