@@ -163,13 +163,7 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
-              <Link
-                to="/doctor/patients"
-                className={linkClass}
-                onClick={() => setOpen(false)}
-              >
-                Patients
-              </Link>
+
               <Link
                 to="/doctor/schedule"
                 className={linkClass}
