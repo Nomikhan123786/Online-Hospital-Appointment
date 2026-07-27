@@ -64,6 +64,9 @@ const CLIENT_URL = process.env.CLIENT_URL || "*";
 app.use(cors({ origin: CLIENT_URL, credentials: true }));
 app.use(express.json());
 
+// Serve uploaded files (e.g. doctor pictures) statically
+app.use("/uploads", express.static("uploads"));
+
 const io = new Server(server, {
   cors: { origin: CLIENT_URL, credentials: true },
 });

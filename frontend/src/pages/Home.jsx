@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import API from "../services/axiosInstance";
 import "../style/index.css";
 
 const departments = [
@@ -11,13 +12,6 @@ const departments = [
   { name: "Dentistry", desc: "Oral & dental care", icon: "🦷" },
   { name: "Ophthalmology", desc: "Eye care & surgery", icon: "👁" },
   { name: "General Medicine", desc: "Everyday health needs", icon: "🩺" },
-];
-
-const doctors = [
-  { name: "Dr. Sarah Bennett", specialty: "Cardiologist", exp: "12 yrs experience", rating: "4.9" },
-  { name: "Dr. James Okafor", specialty: "Neurologist", exp: "9 yrs experience", rating: "4.8" },
-  { name: "Dr. Maria Torres", specialty: "Pediatrician", exp: "15 yrs experience", rating: "5.0" },
-  { name: "Dr. Ahmed Malik", specialty: "Orthopedic Surgeon", exp: "10 yrs experience", rating: "4.7" },
 ];
 
 const testimonials = [
@@ -87,6 +81,22 @@ const FaqItem = ({ item, isOpen, onClick }) => (
 
 const Home = () => {
   const [openFaq, setOpenFaq] = useState(0);
+  const [doctors, setDoctors] = useState([]);
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data } = await API.get("/doctors");
+        setDoctors(data);
+      } catch (error) {
+        console.log("Error fetching doctors:", error);
+      } finally {
+        setDoctorsLoading(false);
+      }
+    };
+    fetchDoctors();
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -118,15 +128,23 @@ const Home = () => {
           <div className="hidden lg:flex justify-center">
             <div className="glass-card rounded-3xl p-6 w-full max-w-sm shadow-2xl">
               <p className="text-white/80 text-xs font-semibold uppercase tracking-wide mb-4">Next Available</p>
-              {doctors.slice(0, 3).map((d) => (
-                <div key={d.name} className="flex items-center justify-between py-3 border-b border-white/10 last:border-0">
-                  <div>
-                    <p className="text-white font-semibold text-sm">{d.name}</p>
-                    <p className="text-brand-100 text-xs">{d.specialty}</p>
+              {doctorsLoading ? (
+                [...Array(3)].map((_, i) => (
+                  <div key={i} className="h-12 rounded-lg bg-white/10 animate-pulse mb-3 last:mb-0" />
+                ))
+              ) : doctors.length === 0 ? (
+                <p className="text-white/70 text-sm">No doctors available yet.</p>
+              ) : (
+                doctors.slice(0, 3).map((d) => (
+                  <div key={d._id} className="flex items-center justify-between py-3 border-b border-white/10 last:border-0">
+                    <div>
+                      <p className="text-white font-semibold text-sm">{d.user?.name}</p>
+                      <p className="text-brand-100 text-xs">{d.specialization}</p>
+                    </div>
+                    <span className="text-white/70 text-xs">${d.fees}</span>
                   </div>
-                  <span className="text-white/70 text-xs">★ {d.rating}</span>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -238,26 +256,42 @@ const Home = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {doctors.map((d) => (
-              <div key={d.name} className="surface-card overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-36 flex items-center justify-center text-4xl font-display font-bold text-brand-600" style={{ background: "var(--color-brand-50)" }}>
-                  {d.name.split(" ").map((n) => n[0]).slice(1).join("")}
-                </div>
-                <div className="p-5">
-                  <h3 className="font-semibold text-ink-900">{d.name}</h3>
-                  <p className="text-sm text-brand-600 mb-1">{d.specialty}</p>
-                  <p className="text-xs text-ink-400">{d.exp}</p>
-                  <div className="flex items-center justify-between mt-4">
-                    <span className="text-xs font-medium text-ink-600">★ {d.rating} rating</span>
-                    <Link to="/doctors" className="text-xs font-semibold text-brand-600 hover:text-brand-700">
-                      Book →
-                    </Link>
+          {doctorsLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="surface-card h-64 animate-pulse bg-ink-50" />
+              ))}
+            </div>
+          ) : doctors.length === 0 ? (
+            <div className="surface-card text-center py-14 px-6">
+              <div className="text-4xl mb-3">🩺</div>
+              <p className="text-ink-600 font-medium">No doctors available yet</p>
+              <p className="text-sm text-ink-400 mt-1">Check back soon as we onboard new specialists.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+              {doctors.slice(0, 4).map((d) => (
+                <div key={d._id} className="surface-card overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="h-36 flex items-center justify-center text-4xl font-display font-bold text-brand-600" style={{ background: "var(--color-brand-50)" }}>
+                    {d.user?.name?.charAt(0)}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-semibold text-ink-900">{d.user?.name}</h3>
+                    <p className="text-sm text-brand-600 mb-1">{d.specialization}</p>
+                    <p className="text-xs text-ink-400">
+                      {d.experience ? `${d.experience} yrs experience` : d.hospitalName}
+                    </p>
+                    <div className="flex items-center justify-between mt-4">
+                      <span className="text-xs font-medium text-ink-600">${d.fees} fee</span>
+                      <Link to={`/doctor/${d._id}`} className="text-xs font-semibold text-brand-600 hover:text-brand-700">
+                        Book →
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

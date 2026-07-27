@@ -17,7 +17,17 @@ const Login = () => {
     try {
       const res = await API.post("/auth/login", form);
       login(res.data);
-      navigate("/dashboard");
+
+      const role = res.data?.role;
+      if (role === "patient") {
+        navigate("/");
+      } else if (role === "doctor") {
+        navigate("/doctor/dashboard");
+      } else if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }

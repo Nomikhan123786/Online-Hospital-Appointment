@@ -11,6 +11,8 @@ const doctorSchema = mongoose.Schema(
     experience: Number,
     fees: Number,
     hospitalName: String,
+    picture: { type: String, default: "" },
+    status: { type: Boolean, default: true },
     schedule: [
       {
         day: String, // Monday, Tuesday

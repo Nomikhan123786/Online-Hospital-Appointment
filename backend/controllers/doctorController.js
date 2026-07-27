@@ -5,7 +5,15 @@ import bcrypt from "bcryptjs";
 
 export const addDoctor = async (req, res) => {
   try {
-    const { name, email, password, specialization } = req.body;
+    const {
+      name,
+      email,
+      password,
+      specialization,
+      experience,
+      fees,
+      hospitalName,
+    } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -22,12 +30,25 @@ export const addDoctor = async (req, res) => {
       role: "doctor",
     });
 
+    // Picture uploaded from device (via multer) - stored as filename
+    const picture = req.file ? req.file.filename : "";
+
     const doctor = await Doctor.create({
       user: user._id,
       specialization,
+      experience,
+      fees,
+      hospitalName,
+      picture,
+      status: true, // Doctor is active by default when added by admin
     });
 
-    res.status(201).json(doctor);
+    const populatedDoctor = await Doctor.findById(doctor._id).populate(
+      "user",
+      "name email"
+    );
+
+    res.status(201).json(populatedDoctor);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -37,6 +58,84 @@ export const getDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find().populate("user", "name email");
     res.json(doctors);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// UPDATE DOCTOR (admin can change doctor details, including picture)
+export const updateDoctor = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    const {
+      name,
+      email,
+      password,
+      specialization,
+      experience,
+      fees,
+      hospitalName,
+      status,
+    } = req.body;
+
+    // Update linked User fields (name/email/password)
+    const user = await User.findById(doctor.user);
+    if (user) {
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (password) {
+        user.password = await bcrypt.hash(password, 10);
+      }
+      await user.save();
+    }
+
+    // Update Doctor fields
+    if (specialization !== undefined) doctor.specialization = specialization;
+    if (experience !== undefined) doctor.experience = experience;
+    if (fees !== undefined) doctor.fees = fees;
+    if (hospitalName !== undefined) doctor.hospitalName = hospitalName;
+    if (status !== undefined)
+      doctor.status = status === "true" || status === true;
+
+    // If admin picked a new picture from device, replace the old one
+    if (req.file) {
+      doctor.picture = req.file.filename;
+    }
+
+    await doctor.save();
+
+    const updatedDoctor = await Doctor.findById(doctor._id).populate(
+      "user",
+      "name email"
+    );
+
+    res.json(updatedDoctor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// TOGGLE DOCTOR STATUS (activate / deactivate)
+export const toggleDoctorStatus = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    doctor.status = !doctor.status;
+    await doctor.save();
+
+    res.json({
+      message: `Doctor status set to ${doctor.status ? "active" : "inactive"}`,
+      doctor,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
