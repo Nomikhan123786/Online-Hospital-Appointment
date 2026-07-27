@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../services/axiosInstance";
 import { Link } from "react-router-dom";
 import "../../style/index.css";
+import Footer from "../../components/Footer";
 const DoctorsList = () => {
   const [doctors, setDoctors] = useState([]);
 
@@ -59,6 +60,7 @@ const DoctorsList = () => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };

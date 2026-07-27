@@ -30,30 +30,27 @@ import ManagePatients from "./pages/admin/ManagePatients";
 import Reports from "./pages/admin/Reports";
 
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-
 
 function App() {
   return (
     <AuthProvider>
       {/* Router must wrap everything that uses Link/NavLink */}
-      <Router> 
-        <Navbar/>
+      <Router>
+        <Navbar />
         <Routes>
           {/* Public Routes */}
-          
+
           <Route path="/" element={<Home />} />
-           
+
           <Route path="/doctors" element={<DoctorsList />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-
-           
 
           {/* Patient Routes */}
           <Route
@@ -63,7 +60,7 @@ function App() {
                 <DoctorDetails />
               </ProtectedRoute>
             }
-            />
+          />
           <Route
             path="/appointments"
             element={
@@ -93,18 +90,14 @@ function App() {
           <Route
             path="/doctor/schedule"
             element={
-            <ProtectedRoute role="doctor">
-            <ManageSchedule />
-            </ProtectedRoute>
-           }
+              <ProtectedRoute role="doctor">
+                <ManageSchedule />
+              </ProtectedRoute>
+            }
           />
 
-        
-
           {/* Admin Route */}
-         
-         
-          
+
           <Route
             path="/admin/dashboard"
             element={
@@ -121,7 +114,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/admin/patients"
             element={
@@ -130,7 +123,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/admin/reports"
             element={
@@ -143,7 +136,6 @@ function App() {
           {/* Optional Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
-        <Footer />
       </Router>
     </AuthProvider>
   );
