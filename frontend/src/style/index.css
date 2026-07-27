@@ -1,2 +1,121 @@
 
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — shared across the whole app                        */
+/* ------------------------------------------------------------------ */
+@theme {
+  /* Brand palette: deep clinical teal + indigo accent */
+  --color-brand-50: #eefbf8;
+  --color-brand-100: #d4f4ee;
+  --color-brand-200: #a9e9dd;
+  --color-brand-300: #74d7c6;
+  --color-brand-400: #3fbda8;
+  --color-brand-500: #1fa190;
+  --color-brand-600: #158375;
+  --color-brand-700: #14685f;
+  --color-brand-800: #14534d;
+  --color-brand-900: #134540;
+
+  --color-accent-50: #eef1ff;
+  --color-accent-100: #e0e4ff;
+  --color-accent-400: #7c83f4;
+  --color-accent-500: #5b5fef;
+  --color-accent-600: #4640d6;
+
+  --color-ink-50: #f7f8fa;
+  --color-ink-100: #eef0f3;
+  --color-ink-200: #dfe3e8;
+  --color-ink-400: #8b93a1;
+  --color-ink-600: #4b5563;
+  --color-ink-800: #1f2530;
+  --color-ink-900: #12161d;
+
+  --font-display: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+
+  --shadow-soft: 0 2px 10px rgba(18, 22, 29, 0.05), 0 1px 2px rgba(18, 22, 29, 0.04);
+  --shadow-card: 0 12px 32px -8px rgba(20, 83, 77, 0.12), 0 4px 10px -4px rgba(18, 22, 29, 0.06);
+  --shadow-glow: 0 8px 30px -6px rgba(31, 161, 144, 0.35);
+
+  --animate-fade-up: fade-up 0.6s ease both;
+  --animate-fade-in: fade-in 0.5s ease both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink-800);
+  background: #fff;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+/* ------------------------------------------------------------------ */
+/* Small reusable primitives so every page/dashboard looks consistent */
+/* ------------------------------------------------------------------ */
+.surface-card {
+  background: #fff;
+  border: 1px solid var(--color-ink-100);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-brand-600);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px rgba(18, 22, 29, 0.06);
+}
+.btn-primary:hover {
+  background: var(--color-brand-700);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #fff;
+  color: var(--color-brand-700);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-ink-200);
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--color-brand-400);
+  background: var(--color-brand-50);
+}
+
+::selection {
+  background: var(--color-brand-200);
+}
