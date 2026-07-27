@@ -30,6 +30,7 @@ import ManagePatients from "./pages/admin/ManagePatients";
 import Reports from "./pages/admin/Reports";
 
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 
@@ -142,6 +143,7 @@ function App() {
           {/* Optional Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
+        <Footer />
       </Router>
     </AuthProvider>
   );
