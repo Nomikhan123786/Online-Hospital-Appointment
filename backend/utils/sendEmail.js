@@ -1,24 +1,21 @@
-const sendEmail = async (email, subject, text, isOtp = false) => {
-  // Only style as an OTP box when caller explicitly says it's an OTP email
+const sendEmail = async (
+  email,
+  subject,
+  text,
+  isOtp = false,
+  highlight = null,
+) => {
+  // Only style as an OTP box when the caller explicitly says it's an OTP email.
+  // "highlight" lets other emails (e.g. appointment date/time) show a
+  // similar styled box without being mistaken for an OTP.
   const otpMatch = isOtp ? text.match(/(\d{4,8})/) : null;
   const otp = otpMatch ? otpMatch[1] : null;
   const introText = otp ? text.split(otp)[0].trim() : text;
+  const boxContent = otp || highlight;
 
-  const sendEmail = async (
-    email,
-    subject,
-    text,
-    isOtp = false,
-    highlight = null,
-  ) => {
-    const otpMatch = isOtp ? text.match(/(\d{4,8})/) : null;
-    const otp = otpMatch ? otpMatch[1] : null;
-    const introText = otp ? text.split(otp)[0].trim() : text;
-    const boxContent = otp || highlight; // OTP box OR custom highlight (e.g. date/time)
-
-    const htmlContent = `
+  const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #f8fafc; border-radius: 12px;">
-      <h2 style="color: #1e293b; margin-bottom: 8px;">MediCare+</h2>
+      <h2 style="color: #1e293b; margin-bottom: 8px;">Online Hospital Appointment+</h2>
       <p style="color: #475569; font-size: 15px;">${introText}</p>
       ${
         boxContent
@@ -32,8 +29,7 @@ const sendEmail = async (email, subject, text, isOtp = false) => {
       }
     </div>
   `;
-    // ...rest same (fetch call to Brevo)
-  };
+
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: {
