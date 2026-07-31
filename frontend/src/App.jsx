@@ -33,12 +33,14 @@ import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       {/* Router must wrap everything that uses Link/NavLink */}
       <Router>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           {/* Public Routes */}

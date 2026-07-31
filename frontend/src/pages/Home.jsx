@@ -15,26 +15,26 @@ const departments = [
   { name: "General Medicine", desc: "Everyday health needs", icon: "🩺" },
 ];
 
-const testimonials = [
-  {
-    quote:
-      "Booking an appointment took less than two minutes, and the reminders meant I never missed a follow-up.",
-    name: "Emily Carter",
-    role: "Patient",
-  },
-  {
-    quote:
-      "As a working parent, being able to check doctor availability in real time has been a genuine time-saver.",
-    name: "Daniel Reyes",
-    role: "Patient",
-  },
-  {
-    quote:
-      "The platform keeps my schedule organized and lets me review patient history before every visit.",
-    name: "Dr. Sarah Bennett",
-    role: "Cardiologist",
-  },
-];
+// const testimonials = [
+//   {
+//     quote:
+//       "Booking an appointment took less than two minutes, and the reminders meant I never missed a follow-up.",
+//     name: "Emily Carter",
+//     role: "Patient",
+//   },
+//   {
+//     quote:
+//       "As a working parent, being able to check doctor availability in real time has been a genuine time-saver.",
+//     name: "Daniel Reyes",
+//     role: "Patient",
+//   },
+//   {
+//     quote:
+//       "The platform keeps my schedule organized and lets me review patient history before every visit.",
+//     name: "Dr. Sarah Bennett",
+//     role: "Cardiologist",
+//   },
+// ];
 
 const faqs = [
   {
@@ -229,7 +229,10 @@ const Home = () => {
         </section>
 
         {/* ---------------- Why Choose Us ---------------- */}
-        <section className="py-16 sm:py-20 md:py-24">
+        <section
+          className="py-16 sm:py-20 md:py-24"
+          style={{ background: "var(--color-ink-50)" }}
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-ink-900 mb-4">
@@ -330,7 +333,10 @@ const Home = () => {
         </section>
 
         {/* ---------------- Top Doctors ---------------- */}
-        <section className="py-16 sm:py-20 md:py-24">
+        <section
+          className="py-16 sm:py-20 md:py-24"
+          style={{ background: "var(--color-ink-50)" }}
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12 sm:mb-16 gap-4">
               <div>
