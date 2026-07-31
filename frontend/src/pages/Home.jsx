@@ -112,7 +112,7 @@ const Home = () => {
           className="relative overflow-hidden bg-brand-900"
           style={{
             background:
-              "linear-gradient(135deg, var(--color-brand-800), var(--color-brand-600))",
+              " linear-gradient(90deg,rgba(111, 181, 238, 1) 0%, rgba(56, 224, 196, 1) 100%, rgba(87, 199, 133, 1) 40%, rgba(0, 0, 0, 1) 53%)",
           }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-28 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
@@ -504,7 +504,7 @@ const Home = () => {
         </section>
 
         {/* ---------------- Testimonials ---------------- */}
-        <section
+        {/* <section
           className="py-16 sm:py-20 md:py-24"
           style={{
             background:
@@ -529,7 +529,7 @@ const Home = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* ---------------- FAQ ---------------- */}
         <section className="py-16 sm:py-20 md:py-24">
