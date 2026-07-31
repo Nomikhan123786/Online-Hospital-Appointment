@@ -22,7 +22,7 @@ const Navbar = () => {
     <nav className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-ink-100 px-4 sm:px-6 lg:px-8 py-3.5 animate-fade-in relative z-50">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center font-display font-bold text-white bg-brand-600">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center font-display font-bold text-white bg-[#6fb5ee]">
             +
           </div>
           <h1 className="text-lg sm:text-xl font-display font-bold text-ink-900">
@@ -85,7 +85,7 @@ const Navbar = () => {
               >
                 Login
               </Link>
-              <Link to="/register" className="btn-primary text-sm">
+              <Link to="/register" className="btn-primary bg-[#6fb5ee] text-sm">
                 Register
               </Link>
             </>

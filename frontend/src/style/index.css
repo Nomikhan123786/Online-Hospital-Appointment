@@ -67,13 +67,13 @@ h1, h2, h3, h4, .font-display {
 /* ------------------------------------------------------------------ */
 .surface-card {
   background: #fff;
-  border: 1px solid var(--color-ink-100);
+  border: 1px solid #6fc6ee;
   border-radius: 1rem;
   box-shadow: var(--shadow-soft);
 }
 
 .glass-card {
-  background: rgba(31, 161, 144, 0.9);
+  background: #59a9eb;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -84,7 +84,7 @@ h1, h2, h3, h4, .font-display {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--color-brand-600);
+  background: #6fb5ee;
   color: #fff;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
@@ -93,7 +93,7 @@ h1, h2, h3, h4, .font-display {
   box-shadow: 0 1px 2px rgba(18, 22, 29, 0.06);
 }
 .btn-primary:hover {
-  background: var(--color-brand-700);
+  background: #59a1dd;
   box-shadow: var(--shadow-glow);
   transform: translateY(-1px);
 }

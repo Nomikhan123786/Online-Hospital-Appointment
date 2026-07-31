@@ -495,7 +495,7 @@ const Home = () => {
               ].map((s) => (
                 <div
                   key={s.title}
-                  className="p-6 rounded-2xl border border-ink-100 hover:border-brand-200 hover:bg-brand-50/40 transition-colors"
+                  className="p-6 rounded-2xl border border-[#6fb5ee] hover:border-[#55a9ee] hover:bg-brand-50/40 transition-colors"
                 >
                   <h3 className="font-semibold text-ink-900 mb-2 text-sm sm:text-base">
                     {s.title}
@@ -565,7 +565,7 @@ const Home = () => {
               className="rounded-3xl px-6 sm:px-12 py-12 sm:py-16 text-center"
               style={{
                 background:
-                  "linear-gradient(135deg, var(--color-brand-600), var(--color-accent-500))",
+                  " linear-gradient(90deg,rgba(111, 181, 238, 1) 0%, rgba(56, 224, 196, 1) 100%, rgba(87, 199, 133, 1) 40%, rgba(0, 0, 0, 1) 53%)",
               }}
             >
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-white mb-4">
